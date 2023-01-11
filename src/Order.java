@@ -1,9 +1,10 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public abstract class Order {
-    
-    private int id = 1;
+public abstract class Order implements Priceable{
+    private static int originalId = 1;
+
+    private int id;
     private String name;
     private String address;
     private ArrayList<Item> listOfItems;
@@ -13,15 +14,18 @@ public abstract class Order {
     private LocalDateTime orderDate;
 
     public Order(String name, String address, ArrayList<Item> listOfItems, Customer customer, PaymentType paymentType) {
-        this.id++;
+        this.id = originalId++;
         this.name = name;
         this.address = address;
         this.listOfItems = listOfItems;
         this.customer = customer;
         this.paymentType = paymentType;
-        this.totalPrice = calculateTotalPrice();
         this.orderDate = LocalDateTime.now();
         addItemToFavItems();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -61,8 +65,8 @@ public abstract class Order {
         return totalPrice;
     }
 
-    public void setTotalPrice() {
-        this.totalPrice = calculateTotalPrice();
+    public void setTotalPrice(double price) {
+        this.totalPrice = price;
     }
 
     public PaymentType getPaymentType() {
@@ -81,11 +85,10 @@ public abstract class Order {
         this.orderDate = LocalDateTime.now();
     }
 
-    private double calculateTotalPrice(){
-        return 0;
-    }
-
     public void addItemToFavItems(){
-
+        for(Item item : listOfItems){
+            this.customer.addFavItem(item);
+        }
     }
+
 }
